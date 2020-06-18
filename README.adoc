@@ -45,6 +45,7 @@ The main goal of this project is integrating Machine Learning workflow including
 ----
 pip install jupyter-client
 pip install ipython
+pip install ipykernel
 pip install protobuf
 pip install grpcio
 ----
@@ -64,6 +65,26 @@ Before submitting your change please note that:
 
 
 Tests help us assure that we're delivering a reliable plugin, and that we've communicated our intent to other developers in a way that they can detect when they run tests.
+
+==== Guideline for setup
+
+1. Setup JDK 8 and Maven 3.5.*
+2. Create a directory and virtual environment
+
+    $ mkdir machine-learning-plugin
+    $ virtualenv venv
+    $ source venv/bin/activate
+    $ which python
+
+3. Install the prerequisites
+4. Fork `jenkinsci/machine-learning-plugin` github repo
+5. Clone the forked repo to local and test it
+
+    $ git clone https://github.com/jenkinsci/machine-learning-plugin.git
+    $ mvn clean install
+    $ mvn hpi:run
+
+6. Create and build job using IPython builder
 
 ==== Code Style
 
