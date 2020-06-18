@@ -156,6 +156,21 @@
             <artifactId>cloudbees-folder</artifactId>
             <version>6.9</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.zeppelin</groupId>
+            <artifactId>zeppelin-jupyter</artifactId>
+            <version>0.9.0-preview1</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.jsoup</groupId>
+                    <artifactId>jsoup</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.google.code.gson</groupId>
+                    <artifactId>gson</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
     </dependencies>
 
 
@@ -205,6 +220,7 @@
                         <exclude>.github/pull_request_template.md</exclude>
                         <exclude>.github/release-drafter.yml</exclude>
                         <exclude>Jenkinsfile</exclude>
+                        <exclude>src/test/resources/*</exclude>
                     </excludes>
                 </configuration>
                 <executions>

@@ -22,7 +22,6 @@
  * THE SOFTWARE.
  */
 
-
 package io.jenkins.plugins.ml;
 
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
