@@ -55,7 +55,6 @@ public class IPythonBuilder extends Builder implements SimpleBuildStep {
     private final String code;
     private final String filePath;
     private final String parserType;
-    private FileExtension ext;
 
     @DataBoundConstructor
     public IPythonBuilder(String code,String filePath, String parserType) {
@@ -88,7 +87,7 @@ public class IPythonBuilder extends Builder implements SimpleBuildStep {
 
                     // Run builder on selected notebook
                     String extension = filePath.substring(filePath.lastIndexOf(".") + 1);
-                    ext = extension.equals("ipynb") ? FileExtension.ipynb : FileExtension.json;
+                    FileExtension ext = extension.equals("ipynb") ? FileExtension.ipynb : FileExtension.json;
                     FilePath tempFilePath = ws.child(filePath);
                     switch (ext) {
                         case ipynb:
