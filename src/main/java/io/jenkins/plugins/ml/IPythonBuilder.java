@@ -24,9 +24,7 @@
 
 package io.jenkins.plugins.ml;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 import hudson.*;
 import hudson.model.AbstractProject;
 import hudson.model.Run;
@@ -38,6 +36,7 @@ import io.jenkins.plugins.ml.utils.ConvertHelper;
 import jenkins.tasks.SimpleBuildStep;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.zeppelin.interpreter.InterpreterException;
+import org.apache.zeppelin.jupyter.zformat.Note;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
@@ -46,6 +45,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 
 public class IPythonBuilder extends Builder implements SimpleBuildStep {
 
@@ -54,16 +55,13 @@ public class IPythonBuilder extends Builder implements SimpleBuildStep {
     private final String code;
     private final String filePath;
     private final String parserType;
+    private FileExtension ext;
 
     @DataBoundConstructor
     public IPythonBuilder(String code,String filePath, String parserType) {
         this.code = code;
-        this.filePath = filePath;
+        this.filePath = Util.fixEmptyAndTrim(filePath);
         this.parserType = parserType;
-    }
-
-    public String getCode() {
-        return code;
     }
 
     @Override
@@ -90,26 +88,31 @@ public class IPythonBuilder extends Builder implements SimpleBuildStep {
 
                     // Run builder on selected notebook
                     String extension = filePath.substring(filePath.lastIndexOf(".") + 1);
+                    ext = extension.equals("ipynb") ? FileExtension.ipynb : FileExtension.json;
                     FilePath tempFilePath = ws.child(filePath);
-                    switch (extension) {
-                        case "ipynb":
+                    switch (ext) {
+                        case ipynb:
                             listener.getLogger().println(StringUtils.stripStart(interpreterManager.invokeInterpreter(ConvertHelper.jupyterToText(tempFilePath)), "%text"));
                             break;
-                        case "json":
-                            JsonObject obj = ConvertHelper.jupyterToJSON(tempFilePath);
-                            JsonArray array = obj.get("paragraphs").getAsJsonArray();
-                            for (JsonElement element : array)
-                                if (element.isJsonObject()) {
-                                    // get each cell form the JSON element
-                                    JsonObject cell = element.getAsJsonObject();
-                                    String code = cell.get("text").getAsString();
-                                    listener.getLogger().println(code);
-                                    listener.getLogger().println(StringUtils.stripStart(interpreterManager.invokeInterpreter(code), "%text"));
-                                }
+                        case json:
+                            // Zeppelin note book or JSON file will be interpreted line by line
+                            try (final InputStreamReader inputStreamReader = new InputStreamReader(tempFilePath.read(), Charset.forName("UTF-8"))) {
+                                Gson gson = new GsonBuilder().create();
+                                Note n = gson.fromJson(inputStreamReader, Note.class);
+                                JsonObject obj = gson.toJsonTree(n).getAsJsonObject();
+                                JsonArray array = obj.get("paragraphs").getAsJsonArray();
+                                for (JsonElement element : array)
+                                    if (element.isJsonObject()) {
+                                        // get each cell form the JSON element
+                                        JsonObject cell = element.getAsJsonObject();
+                                        String code = cell.get("text").getAsString();
+                                        listener.getLogger().println(code);
+                                        listener.getLogger().println(StringUtils.stripStart(interpreterManager.invokeInterpreter(code), "%text"));
+                                    }
+                            }
                             break;
                         default:
                             listener.getLogger().println("File is not supported by the machine learning plugin");
-
                     }
                 }
 
@@ -120,6 +123,15 @@ public class IPythonBuilder extends Builder implements SimpleBuildStep {
             throw  new AbortException(e.getMessage());
 
         }
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    enum FileExtension {
+        ipynb,
+        json
     }
 
     @Symbol("ipythonBuilder")
