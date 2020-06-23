@@ -206,10 +206,6 @@
             <plugin>
                 <groupId>org.jenkins-ci.tools</groupId>
                 <artifactId>maven-hpi-plugin</artifactId>
-                <configuration>
-                    <pluginFirstClassLoader>true</pluginFirstClassLoader>
-                    <minimumJavaVersion/>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.rat</groupId>
