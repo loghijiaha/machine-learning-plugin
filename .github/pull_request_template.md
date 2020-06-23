@@ -1,10 +1,10 @@
 ## [JENKINS-xxxxx](https://issues.jenkins-ci.org/browse/JENKINS-xxxxx) - summarize pull request in one line
 
-Describe the big picture of your changes here to explain to the maintainers why this pull request should be accepted.
+<!--Describe the big picture of your changes here to explain to the maintainers why this pull request should be accepted.-->
 
 ## Checklist
 
-_Put an `x` in the boxes that apply. You can also fill these out after creating the PR. If you're unsure about any of them, don't hesitate to ask. This is simply a reminder of what we are going to look for before merging your code._
+<!--_Put an `x` in the boxes that apply. You can also fill these out after creating the PR. If you're unsure about any of them, don't hesitate to ask. This is simply a reminder of what we are going to look for before merging your code. -->
 
 - [ ] I have referenced the Jira issue related to my changes in one or more commit messages
 - [ ] Unit tests pass locally with my changes
@@ -15,7 +15,7 @@ _Put an `x` in the boxes that apply. You can also fill these out after creating 
 
 ## Types of changes
 
-What types of changes does your code introduce? _Put an `x` in the boxes that apply_
+<!--What types of changes does your code introduce? _Put an `x` in the boxes that apply_-->
 
 - [ ] Infrastructure change (non-breaking change which updates dependencies or improves infrastructure)
 - [ ] Bug fix (non-breaking change which fixes an issue)
@@ -24,4 +24,4 @@ What types of changes does your code introduce? _Put an `x` in the boxes that ap
 
 ## Further comments
 
-If this is a relatively large or complex change, start the discussion by explaining why you chose the solution you did and what alternatives you considered.
+<!--If this is a relatively large or complex change, start the discussion by explaining why you chose the solution you did and what alternatives you considered.-->
