@@ -43,7 +43,7 @@ The main goal of this project is integrating Machine Learning workflow including
 
 [source,bash]
 ----
-pip install jupyter-client
+pip install jupyter_client
 pip install ipython
 pip install ipykernel
 pip install protobuf
