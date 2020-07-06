@@ -25,9 +25,10 @@
 package io.jenkins.plugins.ml;
 
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class IPythonUserConfig {
+public class IPythonUserConfig implements Serializable {
     private final String serverGatewayAddress;
     private final long iPythonLaunchTimeout;
     private final long maxResult;
