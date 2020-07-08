@@ -80,12 +80,13 @@ public class IPythonBuilder extends Builder implements SimpleBuildStep, Serializ
             long launchTimeout = ipythonServerJobProperty.getServer().getLaunchTimeoutInMilliSeconds();
             long maxResults = ipythonServerJobProperty.getServer().getMaxResults();
             listener.getLogger().println("Executed server : " + serverName);
-            // create configuration
+            // Get the right channel to execute the code
             launcher.getChannel().call(new MasterToSlaveCallable<Void, Exception>() {
 
                 private static final long serialVersionUID = 1791985298575049757L;
                 @Override
                 public Void call() {
+                    // create configuration
                     IPythonUserConfig jobUserConfig = new IPythonUserConfig(serverAddress,launchTimeout,maxResults);
                     try ( IPythonInterpreterManager interpreterManager = new IPythonInterpreterManager(jobUserConfig)){
                         interpreterManager.initiateInterpreter();
