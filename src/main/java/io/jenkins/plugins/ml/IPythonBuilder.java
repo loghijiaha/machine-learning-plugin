@@ -25,6 +25,7 @@
 package io.jenkins.plugins.ml;
 
 import com.google.gson.*;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.*;
 import hudson.model.AbstractProject;
 import hudson.model.Run;
@@ -36,6 +37,7 @@ import io.jenkins.plugins.ml.utils.ConvertHelper;
 import jenkins.security.MasterToSlaveCallable;
 import jenkins.tasks.SimpleBuildStep;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.zeppelin.interpreter.InterpreterException;
 import org.apache.zeppelin.jupyter.zformat.Note;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -44,6 +46,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.nio.charset.Charset;
@@ -66,6 +69,7 @@ public class IPythonBuilder extends Builder implements SimpleBuildStep, Serializ
     }
 
     @Override
+    @SuppressFBWarnings("NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE")
     public void perform(@Nonnull Run<?, ?> run, @Nonnull FilePath ws, @Nonnull Launcher launcher, @Nonnull TaskListener listener) throws AbortException {
         try {
 
@@ -77,11 +81,11 @@ public class IPythonBuilder extends Builder implements SimpleBuildStep, Serializ
             long maxResults = ipythonServerJobProperty.getServer().getMaxResults();
             listener.getLogger().println("Executed server : " + serverName);
             // create configuration
-            launcher.getChannel().call(new MasterToSlaveCallable<Void, Throwable>() {
+            launcher.getChannel().call(new MasterToSlaveCallable<Void, Exception>() {
 
                 private static final long serialVersionUID = 1791985298575049757L;
                 @Override
-                public Void call() throws Throwable {
+                public Void call() {
                     IPythonUserConfig jobUserConfig = new IPythonUserConfig(serverAddress,launchTimeout,maxResults);
                     try ( IPythonInterpreterManager interpreterManager = new IPythonInterpreterManager(jobUserConfig)){
                         interpreterManager.initiateInterpreter();
@@ -132,6 +136,8 @@ public class IPythonBuilder extends Builder implements SimpleBuildStep, Serializ
                             }
                         }
 
+                    } catch (InterruptedException | InterpreterException | IOException e) {
+                        e.printStackTrace(listener.getLogger());
                     }
 
                     return null;
