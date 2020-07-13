@@ -43,15 +43,17 @@ public class Server extends AbstractDescribableImpl<Server> {
     private final String serverAddress;
     private final long launchTimeout;
     private final long maxResults;
+    private final String pythonVersion;
 
     private static final Pattern pattern = Pattern.compile("^[a-zA-Z0-9_]+$");
 
     @DataBoundConstructor
-    public Server(String serverName, String serverAddress, long launchTimeout,long maxResults) {
+    public Server(String serverName, String serverAddress, long launchTimeout,long maxResults, String pythonVersion ) {
         this.serverName = serverName;
         this.serverAddress = serverAddress;
         this.launchTimeout = launchTimeout;
         this.maxResults = maxResults;
+        this.pythonVersion = pythonVersion;
     }
 
     public String getServerName() {
@@ -72,6 +74,10 @@ public class Server extends AbstractDescribableImpl<Server> {
 
     public long getMaxResults() {
         return maxResults;
+    }
+
+    public String getPythonVersion() {
+        return pythonVersion;
     }
 
     @Override
@@ -141,12 +147,13 @@ public class Server extends AbstractDescribableImpl<Server> {
         public FormValidation doValidate(
                                          @QueryParameter String serverAddress,
                                          @QueryParameter String launchTimeout,
-                                         @QueryParameter String maxResults
+                                         @QueryParameter String maxResults,
+                                         @QueryParameter String pythonVersion
                                          ) throws Exception {
 
             if(Util.fixEmptyAndTrim(serverAddress) != null) {
                 try{
-                    IPythonUserConfig userConfig = new IPythonUserConfig(serverAddress, Integer.parseInt(launchTimeout), Integer.parseInt(maxResults));
+                    IPythonUserConfig userConfig = new IPythonUserConfig(serverAddress, Integer.parseInt(launchTimeout), Integer.parseInt(maxResults), pythonVersion);
                     try (InterpreterManager interpreterManager = new IPythonInterpreterManager(userConfig)) {
                         interpreterManager.initiateInterpreter();
                         if (interpreterManager.testConnection()) {

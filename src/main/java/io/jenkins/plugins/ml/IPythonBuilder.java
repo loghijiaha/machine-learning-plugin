@@ -79,6 +79,7 @@ public class IPythonBuilder extends Builder implements SimpleBuildStep, Serializ
             String serverAddress = ipythonServerJobProperty.getServer().getServerAddress();
             long launchTimeout = ipythonServerJobProperty.getServer().getLaunchTimeoutInMilliSeconds();
             long maxResults = ipythonServerJobProperty.getServer().getMaxResults();
+            String pythonVersion = ipythonServerJobProperty.getServer().getPythonVersion();
             listener.getLogger().println("Executed server : " + serverName);
             // Get the right channel to execute the code
             launcher.getChannel().call(new MasterToSlaveCallable<Void, Exception>() {
@@ -87,7 +88,7 @@ public class IPythonBuilder extends Builder implements SimpleBuildStep, Serializ
                 @Override
                 public Void call() {
                     // create configuration
-                    IPythonUserConfig jobUserConfig = new IPythonUserConfig(serverAddress,launchTimeout,maxResults);
+                    IPythonUserConfig jobUserConfig = new IPythonUserConfig(serverAddress, launchTimeout, maxResults, pythonVersion);
                     try ( IPythonInterpreterManager interpreterManager = new IPythonInterpreterManager(jobUserConfig)){
                         interpreterManager.initiateInterpreter();
                         LOGGER.info("Connection initiated successfully");

@@ -32,15 +32,17 @@ public class IPythonUserConfig implements Serializable {
     private final String serverGatewayAddress;
     private final long iPythonLaunchTimeout;
     private final long maxResult;
+    private final String pythonVersion;
 
     /**
      * Constructor for configuration
      */
 
-    public IPythonUserConfig(String serverGatewayAddress, long iPythonLaunchTimeout, long maxResult) {
+    public IPythonUserConfig(String serverGatewayAddress, long iPythonLaunchTimeout, long maxResult, String pythonVersion) {
         this.serverGatewayAddress = serverGatewayAddress;
         this.iPythonLaunchTimeout = iPythonLaunchTimeout;
         this.maxResult = maxResult;
+        this.pythonVersion = pythonVersion;
     }
 
     public String getServerGatewayAddress() {
@@ -55,6 +57,10 @@ public class IPythonUserConfig implements Serializable {
         return maxResult;
     }
 
+    public String getPythonVersion() {
+        return pythonVersion;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -66,12 +72,13 @@ public class IPythonUserConfig implements Serializable {
         IPythonUserConfig userConfig = (IPythonUserConfig) o;
         return serverGatewayAddress.equals(userConfig.getServerGatewayAddress()) &&
                 iPythonLaunchTimeout == userConfig.getIPythonLaunchTimeout() &&
-                maxResult == userConfig.getMaxResult();
+                maxResult == userConfig.getMaxResult() &&
+                pythonVersion.equals(userConfig.getPythonVersion());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(serverGatewayAddress,iPythonLaunchTimeout,maxResult);
+        return Objects.hash(serverGatewayAddress,iPythonLaunchTimeout,maxResult,pythonVersion);
     }
 
 }

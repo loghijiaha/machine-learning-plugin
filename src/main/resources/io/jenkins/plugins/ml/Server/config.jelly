@@ -37,9 +37,17 @@
     <f:entry title="Max results" field="maxResults">
         <f:textbox default="3" />
     </f:entry>
+    <f:entry title="Python version">
+        <div>
+            <f:radio name="pythonVersion" value="python2" title="Python 2" checked="${instance.pythonVersion=='python2'}"/>
+        </div>
+        <div>
+            <f:radio name="pythonVersion" value="python3" title="Python 3+" checked="${instance.pythonVersion=='python3'}"/>
+        </div>
+    </f:entry>
     <f:entry>
         <f:validateButton title="${%Test connection}"
-                          method="validate" with="serverAddress,launchTimeout,maxResults" />
+                          method="validate" with="serverAddress,launchTimeout,maxResults,pythonVersion" />
     </f:entry>
     <f:entry title="">
         <div align="right">

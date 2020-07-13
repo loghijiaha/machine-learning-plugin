@@ -42,6 +42,7 @@ public class IPythonKernelInterpreter implements KernelInterpreter  {
     private final String serverGatewayAddress;
     private final long iPythonLaunchTimeout;
     private final long maxResult;
+    private final String pythonVersion;
 
     private LazyOpenInterpreter interpreter;
     private InterpreterResultMessage interpreterResultMessage ;
@@ -53,6 +54,7 @@ public class IPythonKernelInterpreter implements KernelInterpreter  {
         this.serverGatewayAddress = userConfig.getServerGatewayAddress();
         this.iPythonLaunchTimeout = userConfig.getIPythonLaunchTimeout();
         this.maxResult = userConfig.getMaxResult();
+        this.pythonVersion = userConfig.getPythonVersion();
 
         // properties for the interpreter
         Properties properties = new Properties();
@@ -60,6 +62,8 @@ public class IPythonKernelInterpreter implements KernelInterpreter  {
         properties.setProperty("zeppelin.python.gatewayserver_address", serverGatewayAddress);
         properties.setProperty("zeppelin.ipython.launch.timeout", String.valueOf(iPythonLaunchTimeout));
         properties.setProperty("zeppelin.py4j.useAuth","false");
+        properties.setProperty("zeppelin.python.useIPython","true");
+        properties.setProperty("zeppelin.python", pythonVersion);
 
         // Initiate a Lazy interpreter
         interpreter = new LazyOpenInterpreter(new IPythonInterpreter(properties));
