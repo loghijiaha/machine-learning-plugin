@@ -33,9 +33,9 @@ link:https://gitter.im/jenkinsci/gsoc-machine-learning-project[image:https://bad
 
 == Overview
 
-The main goal of this project is integrating Machine Learning workflow including Data preprocessing, Model Training, Evaluation and Prediction with Jenkins build tasks. This plugin will be capable of executing code fragments via IPython kernel as currently supported by Jupyter.
+The main goal of this project is integrating Machine Learning workflow including Data preprocessing, Model Training, Evaluation and Prediction with Jenkins build tasks. This plugin is capable of executing code fragments via IPython kernel as currently supported by Jupyter.
 
-=== Using with Python
+=== Using with Python 3
 
 ==== Prerequisites
 
@@ -43,12 +43,20 @@ The main goal of this project is integrating Machine Learning workflow including
 
 [source,bash]
 ----
-pip install jupyter_client
-pip install ipython
-pip install ipykernel
+pip install jupyter
 pip install protobuf
 pip install grpcio
 ----
+
+- For **Anaconda** environment need to install grpcio as Jupyter is already included in anaconda. For grpcio version >= 1.12 and need to install protobuf separately.
+
+[source,bash]
+----
+pip install protobuf
+pip install grpcio
+----
+
+> DEPRECATION: Python 2.7 reached the end of its life on January 1st, 2020. Please upgrade your Python as Python 2.7 is no longer maintained.
 
 ==== Configure IPython kernel
 * Name should be alphanumeric and contains only `_` as a special character
@@ -88,54 +96,4 @@ image:docs/images/file_builder.png[builder]
 
 === Contributing to the Plugin
 
-New feature proposals and bug fix proposals should be submitted as https://help.github.com/articles/creating-a-pull-request[GitHub pull requests].
-
-Fork the repository on GitHub, prepare your change on your forked copy, and submit a pull request (see https://github.com/jenkinsci/machine-learning-plugin/pulls[here] for open pull requests).
-
-Before submitting your change please note that:
-
-* tests should be added for any changed code
-* the code formatting should follow the defined standard - see Code Style
-* you use findbugs to see if you haven't introduced any new warnings
-
-
-Tests help us assure that we're delivering a reliable plugin, and that we've communicated our intent to other developers in a way that they can detect when they run tests.
-
-==== Guideline for setup
-
-1. Setup JDK 8 and Maven 3.5.*
-2. Create a directory and virtual environment
-
-    $ mkdir machine-learning-plugin
-    $ virtualenv venv
-    $ source venv/bin/activate
-    $ which python
-
-3. Install the prerequisites
-4. Fork `jenkinsci/machine-learning-plugin` github repo
-5. Clone the forked repo to local and test it
-
-    $ git clone https://github.com/jenkinsci/machine-learning-plugin.git
-    $ mvn clean install
-    $ mvn hpi:run
-
-6. Create and build job using IPython builder
-
-==== Code Style
-
-We try to improve the code quality by conforming to
-https://google.github.io/styleguide/javaguide.html[Google Java styleguide], that is defined in
-https://raw.githubusercontent.com/checkstyle/checkstyle/master/src/main/resources/google_checks.xml[google_checks.xml].
-If you are using an IDE, like IntelliJ IDEA, please:
-
-- install https://plugins.jetbrains.com/plugin/8527-google-java-format[Google Java Format plugin]
-
-or
-
-- install the [Checkstyle plugin](https://plugins.jetbrains.com/plugin/1065-checkstyle-idea)
-- go to **Preferences > Editor > Code Style > Java**, select **Scheme** to *Project*
-- click the Cog icon and import Checkstyle configuration from https://raw.githubusercontent.com/checkstyle/checkstyle/master/src/main/resources/google_checks.xml[google_checks.xml]
-
-Currently the formatting is not automatically checked during the build. However, in the effort to
-improve the quality of the code,  maintainers might ask for proper formatting during the review
-process, so it is better to have it in place sooner than later.
+Please refer to the following link for more details. See link:CONTRIBUTING.adoc[here] .
