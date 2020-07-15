@@ -1,4 +1,4 @@
-[[DcokerAgent]]
+[[DockerAgent]]
 = Usage of Docker Agent
 :toc: right
 
