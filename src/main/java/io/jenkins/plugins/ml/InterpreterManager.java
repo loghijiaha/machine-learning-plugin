@@ -35,10 +35,10 @@ import java.io.IOException;
 
 public abstract class InterpreterManager implements Closeable {
 
-    abstract KernelInterpreter createInterpreter();
-    abstract void initiateInterpreter() throws InterpreterException;
-    abstract void closeInterpreter();
-    abstract boolean testConnection() throws IOException, InterpreterException;
+    protected abstract KernelInterpreter createInterpreter();
+    public abstract void initiateInterpreter() throws InterpreterException;
+    public abstract void closeInterpreter();
+    protected abstract boolean testConnection() throws IOException, InterpreterException;
 
     protected String invokeInterpreter(String code) throws IOException, InterpreterException {
         KernelInterpreter kernelInterpreter = createInterpreter();

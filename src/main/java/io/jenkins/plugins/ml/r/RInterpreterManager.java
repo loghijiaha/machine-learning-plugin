@@ -22,8 +22,10 @@
  * THE SOFTWARE.
  */
 
-package io.jenkins.plugins.ml;
+package io.jenkins.plugins.ml.r;
 
+import io.jenkins.plugins.ml.InterpreterManager;
+import io.jenkins.plugins.ml.KernelInterpreter;
 import org.apache.zeppelin.interpreter.Interpreter;
 import org.apache.zeppelin.interpreter.InterpreterException;
 import org.apache.zeppelin.interpreter.InterpreterGroup;
@@ -33,42 +35,29 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.ArrayList;
 
-/**
- * Concrete Factory for IPython interpreter
- */
+public class RInterpreterManager extends InterpreterManager {
 
-public class IPythonInterpreterManager extends InterpreterManager {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(IPythonInterpreterManager.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RInterpreterManager.class);
     private static final InterpreterGroup mockInterpreterGroup = new InterpreterGroup();
     private static int sessionId = 0;
-
     private KernelInterpreter kernelInterpreter;
-    private IPythonUserConfig userConfig;
 
-    IPythonInterpreterManager(IPythonUserConfig userConfig) {
-        this.userConfig = userConfig;
+    public RInterpreterManager() {
         mockInterpreterGroup.put("session_" + sessionId, new ArrayList<Interpreter>());
     }
 
-    /**
-     * Used to create new IPythonKernelInterpreters
-     * @return interpreter instance
-     */
-    @Override
-    protected synchronized KernelInterpreter createInterpreter() {
-        kernelInterpreter = new IPythonKernelInterpreter(this.userConfig);
+    public static void main(String[] args) throws InterpreterException, IOException {
+        // Test for the interpreter
+        RInterpreterManager ir = new RInterpreterManager();
+        ir.initiateInterpreter();
+        System.out.println(ir.invokeInterpreter("a <- 42\nprint(a)"));
+        ir.close();
 
-        // zeppelin api for interpreter
-        Interpreter interpreter = ((IPythonKernelInterpreter) kernelInterpreter).getInterpreter();
-        mockInterpreterGroup.get("session_"+sessionId).add(interpreter);
-        interpreter.setInterpreterGroup(mockInterpreterGroup);
-        sessionId +=1 ;
-        return kernelInterpreter;
     }
 
     @Override
-    public void initiateInterpreter() {
+    public void initiateInterpreter()  {
         kernelInterpreter = createInterpreter();
         kernelInterpreter.start();
     }
@@ -80,9 +69,31 @@ public class IPythonInterpreterManager extends InterpreterManager {
     }
 
     @Override
-    protected boolean testConnection() throws IOException, InterpreterException {
-        String result = kernelInterpreter.interpretCode("print(test)").toString();
-        return result.contains("test");
+    protected boolean testConnection() {
+        //TODO
+        return false;
+    }
+
+    /**
+     * Used to create new RKernelInterpreters
+     *
+     * @return interpreter instance
+     */
+    @Override
+    protected KernelInterpreter createInterpreter() {
+        kernelInterpreter = new RKernelInterpreter();
+
+        // zeppelin api for interpreter
+        Interpreter interpreter = ((RKernelInterpreter) kernelInterpreter).getInterpreter();
+        mockInterpreterGroup.get("session_" + sessionId).add(interpreter);
+        interpreter.setInterpreterGroup(mockInterpreterGroup);
+        sessionId += 1;
+        return kernelInterpreter;
+    }
+
+    @Override
+    public void close()  {
+        kernelInterpreter.shutdown();
     }
 
     @Override
@@ -90,12 +101,4 @@ public class IPythonInterpreterManager extends InterpreterManager {
         return kernelInterpreter.interpretCode(code).toString();
     }
 
-    public Integer getSessionId() {
-        return sessionId;
-    }
-
-    @Override
-    public void close() {
-        kernelInterpreter.shutdown();
-    }
 }
