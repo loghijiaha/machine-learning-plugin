@@ -79,7 +79,7 @@ public class IPythonBuilder extends Builder implements SimpleBuildStep, Serializ
             String serverAddress = ipythonServerJobProperty.getServer().getServerAddress();
             long launchTimeout = ipythonServerJobProperty.getServer().getLaunchTimeoutInMilliSeconds();
             long maxResults = ipythonServerJobProperty.getServer().getMaxResults();
-            listener.getLogger().println("Executed server : " + serverName);
+            listener.getLogger().println("Executed server : " + serverName.toUpperCase());
             // Get the right channel to execute the code
             launcher.getChannel().call(new MasterToSlaveCallable<Void, Exception>() {
 
@@ -91,49 +91,53 @@ public class IPythonBuilder extends Builder implements SimpleBuildStep, Serializ
                     try ( IPythonInterpreterManager interpreterManager = new IPythonInterpreterManager(jobUserConfig)){
                         interpreterManager.initiateInterpreter();
                         LOGGER.info("Connection initiated successfully");
-                        listener.getLogger().println("Code Parser type : " + parserType);
-                        listener.getLogger().println("Executed code output : ");
+                        listener.getLogger().println("Platform : " + System.getProperty("os.name").toUpperCase());
+                        listener.getLogger().println("Type : " + parserType.toUpperCase());
                         if(parserType.equals("text")){
                             listener.getLogger().println(interpreterManager.invokeInterpreter(code));
                         } else {
-
-                            // Run builder on selected notebook
-                            String extension = filePath.substring(filePath.lastIndexOf(".") + 1);
-                            FileExtension ext;
-                            try {
-                                // assign the extension from the enum
-                                ext = FileExtension.valueOf(extension);
-                            } catch (Exception e) {
-                                ext = FileExtension.txt;
-                            }
-                            // create file path for the file
-                            FilePath tempFilePath = ws.child(filePath);
-                            switch (ext) {
-                                case ipynb:
-                                    listener.getLogger().println(StringUtils.stripStart(interpreterManager.invokeInterpreter(ConvertHelper.jupyterToText(tempFilePath)), "%text"));
-                                    break;
-                                case json:
-                                    // Zeppelin note book or JSON file will be interpreted line by line
-                                    try (final InputStreamReader inputStreamReader = new InputStreamReader(tempFilePath.read(), Charset.forName("UTF-8"))) {
-                                        Gson gson = new GsonBuilder().create();
-                                        Note n = gson.fromJson(inputStreamReader, Note.class);
-                                        JsonObject obj = gson.toJsonTree(n).getAsJsonObject();
-                                        JsonArray array = obj.get("paragraphs").getAsJsonArray();
-                                        for (JsonElement element : array)
-                                            if (element.isJsonObject()) {
-                                                // get each cell form the JSON element
-                                                JsonObject cell = element.getAsJsonObject();
-                                                String code = cell.get("text").getAsString();
-                                                listener.getLogger().println(code);
-                                                listener.getLogger().println(StringUtils.stripStart(interpreterManager.invokeInterpreter(code), "%text"));
-                                            }
-                                    }
-                                    break;
-                                case py:
-                                    listener.getLogger().println(StringUtils.stripStart(interpreterManager.invokeInterpreter(tempFilePath.readToString()), "%text"));
-                                    break;
-                                default:
-                                    listener.getLogger().println("File is not supported by the machine learning plugin");
+                            if(Util.fixEmptyAndTrim(filePath) != null){
+                                // Run builder on selected notebook
+                                String extension = filePath.substring(filePath.lastIndexOf(".") + 1);
+                                FileExtension ext;
+                                try {
+                                    // assign the extension from the enum
+                                    ext = FileExtension.valueOf(extension);
+                                } catch (Exception e) {
+                                    ext = FileExtension.txt;
+                                }
+                                // create file path for the file
+                                FilePath tempFilePath = ws.child(filePath);
+                                listener.getLogger().println("Output : ");
+                                switch (ext) {
+                                    case ipynb:
+                                        listener.getLogger().println(StringUtils.stripStart(interpreterManager.invokeInterpreter(ConvertHelper.jupyterToText(tempFilePath)), "%text"));
+                                        break;
+                                    case json:
+                                        // Zeppelin note book or JSON file will be interpreted line by line
+                                        try (final InputStreamReader inputStreamReader = new InputStreamReader(tempFilePath.read(), Charset.forName("UTF-8"))) {
+                                            Gson gson = new GsonBuilder().create();
+                                            Note n = gson.fromJson(inputStreamReader, Note.class);
+                                            JsonObject obj = gson.toJsonTree(n).getAsJsonObject();
+                                            JsonArray array = obj.get("paragraphs").getAsJsonArray();
+                                            for (JsonElement element : array)
+                                                if (element.isJsonObject()) {
+                                                    // get each cell form the JSON element
+                                                    JsonObject cell = element.getAsJsonObject();
+                                                    String code = cell.get("text").getAsString();
+                                                    listener.getLogger().println(code);
+                                                    listener.getLogger().println(StringUtils.stripStart(interpreterManager.invokeInterpreter(code), "%text"));
+                                                }
+                                        }
+                                        break;
+                                    case py:
+                                        listener.getLogger().println(StringUtils.stripStart(interpreterManager.invokeInterpreter(tempFilePath.readToString()), "%text"));
+                                        break;
+                                    default:
+                                        listener.getLogger().println(filePath + " is not supported by the machine learning plugin");
+                                }
+                            }else {
+                                listener.getLogger().println("ERROR : File path is empty " + filePath);
                             }
                         }
 
