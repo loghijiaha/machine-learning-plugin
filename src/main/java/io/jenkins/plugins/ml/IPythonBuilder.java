@@ -72,7 +72,6 @@ public class IPythonBuilder extends Builder implements SimpleBuildStep, Serializ
     @SuppressFBWarnings("NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE")
     public void perform(@Nonnull Run<?, ?> run, @Nonnull FilePath ws, @Nonnull Launcher launcher, @Nonnull TaskListener listener) throws AbortException {
         try {
-
             // get the properties of the job
             ServerJobProperty ipythonServerJobProperty = run.getParent().getProperty(ServerJobProperty.class);
             String serverName = ipythonServerJobProperty.getServer().getServerName();
@@ -110,9 +109,13 @@ public class IPythonBuilder extends Builder implements SimpleBuildStep, Serializ
                             FilePath tempFilePath = ws.child(filePath);
                             switch (ext) {
                                 case ipynb:
+                                    // TODO codeMirrorMode should be json, but not available yet
+                                    run.addAction(new EditCodeAction(run, tempFilePath, "html"));
                                     listener.getLogger().println(StringUtils.stripStart(interpreterManager.invokeInterpreter(ConvertHelper.jupyterToText(tempFilePath)), "%text"));
                                     break;
                                 case json:
+                                    // TODO codeMirrorMode should be json, but not available yet
+                                    run.addAction(new EditCodeAction(run, tempFilePath, "html"));
                                     // Zeppelin note book or JSON file will be interpreted line by line
                                     try (final InputStreamReader inputStreamReader = new InputStreamReader(tempFilePath.read(), Charset.forName("UTF-8"))) {
                                         Gson gson = new GsonBuilder().create();
@@ -130,6 +133,8 @@ public class IPythonBuilder extends Builder implements SimpleBuildStep, Serializ
                                     }
                                     break;
                                 case py:
+                                    // TODO codeMirrorMode should be python, but not available yet
+                                    run.addAction(new EditCodeAction(run, tempFilePath, "javascript"));
                                     listener.getLogger().println(StringUtils.stripStart(interpreterManager.invokeInterpreter(tempFilePath.readToString()), "%text"));
                                     break;
                                 default:
@@ -154,6 +159,10 @@ public class IPythonBuilder extends Builder implements SimpleBuildStep, Serializ
 
     public String getCode() {
         return code;
+    }
+
+    public String getFilePath() {
+        return filePath;
     }
 
     enum FileExtension {
