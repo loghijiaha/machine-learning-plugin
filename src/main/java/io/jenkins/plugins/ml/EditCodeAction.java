@@ -25,6 +25,7 @@
 package io.jenkins.plugins.ml;
 
 import com.google.common.collect.ImmutableList;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.FilePath;
 import hudson.model.*;
 import jenkins.model.ParameterizedJobMixIn;
@@ -116,6 +117,7 @@ public class EditCodeAction implements RunAction2 {
     }
 
     /* accessible by jelly */
+    @SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE")
     public String getCode() throws IOException {
         StringBuilder code = new StringBuilder();
         try (final BufferedReader br = Files.newBufferedReader(Paths.get(filePath.getRemote()))) {
