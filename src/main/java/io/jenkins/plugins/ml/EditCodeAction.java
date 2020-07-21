@@ -54,12 +54,11 @@ public class EditCodeAction implements RunAction2 {
     );
     private transient Run run;
     private transient FilePath filePath;
-    private transient String codeMirrorMode;
+    private final static transient String CODE_MIRROR_MODE = "javascript";
 
-    public EditCodeAction(Run run, FilePath filePath, String codeMirrorMode) {
+    public EditCodeAction(Run run, FilePath filePath) {
         this.run = run;
         this.filePath = filePath;
-        this.codeMirrorMode = codeMirrorMode;
     }
 
     @CheckForNull
@@ -71,13 +70,13 @@ public class EditCodeAction implements RunAction2 {
     @CheckForNull
     @Override
     public String getDisplayName() {
-        return "Edit Code";
+        return "Edit " + filePath.getName();
     }
 
     @CheckForNull
     @Override
     public String getUrlName() {
-        return "edit_code";
+        return "edit_" + filePath.getName();
     }
 
     /* accessible to Jelly */
@@ -130,6 +129,6 @@ public class EditCodeAction implements RunAction2 {
     }
 
     public String getCodeMirrorMode() {
-        return codeMirrorMode;
+        return CODE_MIRROR_MODE;
     }
 }

@@ -107,15 +107,12 @@ public class IPythonBuilder extends Builder implements SimpleBuildStep, Serializ
                             }
                             // create file path for the file
                             FilePath tempFilePath = ws.child(filePath);
+                            run.addAction(new EditCodeAction(run, tempFilePath));
                             switch (ext) {
                                 case ipynb:
-                                    // TODO codeMirrorMode should be json, but not available yet
-                                    run.addAction(new EditCodeAction(run, tempFilePath, "html"));
                                     listener.getLogger().println(StringUtils.stripStart(interpreterManager.invokeInterpreter(ConvertHelper.jupyterToText(tempFilePath)), "%text"));
                                     break;
                                 case json:
-                                    // TODO codeMirrorMode should be json, but not available yet
-                                    run.addAction(new EditCodeAction(run, tempFilePath, "html"));
                                     // Zeppelin note book or JSON file will be interpreted line by line
                                     try (final InputStreamReader inputStreamReader = new InputStreamReader(tempFilePath.read(), Charset.forName("UTF-8"))) {
                                         Gson gson = new GsonBuilder().create();
@@ -133,8 +130,6 @@ public class IPythonBuilder extends Builder implements SimpleBuildStep, Serializ
                                     }
                                     break;
                                 case py:
-                                    // TODO codeMirrorMode should be python, but not available yet
-                                    run.addAction(new EditCodeAction(run, tempFilePath, "javascript"));
                                     listener.getLogger().println(StringUtils.stripStart(interpreterManager.invokeInterpreter(tempFilePath.readToString()), "%text"));
                                     break;
                                 default:

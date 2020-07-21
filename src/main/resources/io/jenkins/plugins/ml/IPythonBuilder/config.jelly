@@ -28,7 +28,7 @@
         <f:radioBlock name="parserType" value="text" checked="false" title="Text Parser" inline="true">
             <f:nested>
                 <f:entry title="${%Code}" field="code">
-                    <f:textarea />
+                    <f:textarea codemirror-mode="javascript" codemirror-config=""/>
                 </f:entry>
             </f:nested>
         </f:radioBlock>
