@@ -28,6 +28,7 @@ import com.google.gson.*;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.*;
 import hudson.model.AbstractProject;
+import hudson.model.Result;
 import hudson.model.Run;
 import hudson.model.TaskListener;
 import hudson.tasks.BuildStepDescriptor;
@@ -134,10 +135,12 @@ public class IPythonBuilder extends Builder implements SimpleBuildStep, Serializ
                                         listener.getLogger().println(StringUtils.stripStart(interpreterManager.invokeInterpreter(tempFilePath.readToString()), "%text"));
                                         break;
                                     default:
-                                        listener.getLogger().println(filePath + " is not supported by the machine learning plugin");
+                                        run.setResult(Result.FAILURE);
+                                        throw new AbortException(filePath + " is not supported by the machine learning plugin");
                                 }
                             }else {
-                                listener.getLogger().println("ERROR : File path is empty " + filePath);
+                                run.setResult(Result.FAILURE);
+                                throw new AbortException("ERROR : File path is empty " + filePath);
                             }
                         }
 
