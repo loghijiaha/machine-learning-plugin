@@ -24,19 +24,22 @@
 
 package io.jenkins.plugins.ml;
 
+import hudson.FilePath;
+import io.jenkins.plugins.ml.utils.Dumper;
 import org.apache.zeppelin.interpreter.Interpreter;
 import org.apache.zeppelin.interpreter.InterpreterException;
 import org.apache.zeppelin.interpreter.InterpreterGroup;
+import org.apache.zeppelin.interpreter.InterpreterResultMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Concrete Factory for IPython interpreter
  */
-
 public class IPythonInterpreterManager extends InterpreterManager {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(IPythonInterpreterManager.class);
@@ -46,6 +49,11 @@ public class IPythonInterpreterManager extends InterpreterManager {
     private KernelInterpreter kernelInterpreter;
     private IPythonUserConfig userConfig;
 
+    /**
+     * Instantiates a new Python interpreter manager.
+     *
+     * @param userConfig the user configuration
+     */
     IPythonInterpreterManager(IPythonUserConfig userConfig) {
         this.userConfig = userConfig;
         mockInterpreterGroup.put("session_" + sessionId, new ArrayList<Interpreter>());
@@ -85,11 +93,58 @@ public class IPythonInterpreterManager extends InterpreterManager {
         return result.contains("test");
     }
 
-    @Override
-    protected String invokeInterpreter(String code) throws IOException, InterpreterException {
-        return kernelInterpreter.interpretCode(code).toString();
+    /**
+     * Invoke interpreter to execute code. This method checks for HTML/Image outputs and save it under @param task.
+     * Code may produce multiple html or images that is handled in this method.
+     *
+     * @param code      the code
+     * @param task      the task
+     * @param workspace the workspace
+     * @return the string for text outputs
+     * @throws InterpreterException the interpreter exception
+     * @throws IOException          the io exception
+     * @throws InterruptedException the interrupted exception
+     */
+    protected String invokeInterpreter(String code, String task, FilePath workspace)
+            throws InterpreterException, IOException, InterruptedException {
+        List<InterpreterResultMessage> interpreterResultMessages = kernelInterpreter.interpretCode(code);
+        boolean containsHTML = false;
+        StringBuilder strTEXTBuild = new StringBuilder();
+        StringBuilder strHTMLBuild = new StringBuilder();
+        LOGGER.info("Size of output", interpreterResultMessages.size());
+        for (InterpreterResultMessage interpreterResultMessage : interpreterResultMessages) {
+            switch (interpreterResultMessage.getType()) {
+                case HTML:
+                    strHTMLBuild.append(interpreterResultMessage.getData());
+                    containsHTML = true;
+                    break;
+                case IMG:
+                    // TODO
+//                    Dumper.dumpImage(new BufferedImage(5,4,8), step, workspace);
+//                    strBuild.append("Image added to " + task );
+//                    strBuild.append('\n');
+                    break;
+                case TEXT:
+                    strTEXTBuild.append(interpreterResultMessage.getData());
+                    strTEXTBuild.append('\n');
+                    break;
+                default:
+                    strTEXTBuild.append("\n");
+                    break;
+            }
+        }
+        if (containsHTML) {
+            Dumper.dumpHtml(strHTMLBuild.toString(), task, workspace);
+            LOGGER.info("Successfully saved ", task);
+        }
+        return strTEXTBuild.toString();
     }
 
+    /**
+     * Gets session id.
+     *
+     * @return the session id
+     */
     public Integer getSessionId() {
         return sessionId;
     }

@@ -37,7 +37,6 @@ import hudson.util.FormValidation;
 import io.jenkins.plugins.ml.utils.ConvertHelper;
 import jenkins.security.MasterToSlaveCallable;
 import jenkins.tasks.SimpleBuildStep;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.zeppelin.interpreter.InterpreterException;
 import org.apache.zeppelin.jupyter.zformat.Note;
 import org.jenkinsci.Symbol;
@@ -61,12 +60,14 @@ public class IPythonBuilder extends Builder implements SimpleBuildStep, Serializ
     private final String code;
     private final String filePath;
     private final String parserType;
+    private final String task;
 
     @DataBoundConstructor
-    public IPythonBuilder(String code,String filePath, String parserType) {
+    public IPythonBuilder(String code, String filePath, String parserType, String task) {
         this.code = code;
         this.filePath = Util.fixEmptyAndTrim(filePath);
         this.parserType = parserType;
+        this.task = task;
     }
 
     @Override
@@ -95,7 +96,7 @@ public class IPythonBuilder extends Builder implements SimpleBuildStep, Serializ
                         listener.getLogger().println("Platform : " + System.getProperty("os.name").toUpperCase());
                         listener.getLogger().println("Type : " + parserType.toUpperCase());
                         if(parserType.equals("text")){
-                            listener.getLogger().println(interpreterManager.invokeInterpreter(code));
+                            listener.getLogger().println(interpreterManager.invokeInterpreter(code, task, ws));
                         } else {
                             if(Util.fixEmptyAndTrim(filePath) != null){
                                 // Run builder on selected notebook
@@ -112,7 +113,7 @@ public class IPythonBuilder extends Builder implements SimpleBuildStep, Serializ
                                 listener.getLogger().println("Output : ");
                                 switch (ext) {
                                     case ipynb:
-                                        listener.getLogger().println(StringUtils.stripStart(interpreterManager.invokeInterpreter(ConvertHelper.jupyterToText(tempFilePath)), "%text"));
+                                        listener.getLogger().println((interpreterManager.invokeInterpreter(ConvertHelper.jupyterToText(tempFilePath), task, ws)));
                                         break;
                                     case json:
                                         // Zeppelin note book or JSON file will be interpreted line by line
@@ -127,12 +128,12 @@ public class IPythonBuilder extends Builder implements SimpleBuildStep, Serializ
                                                     JsonObject cell = element.getAsJsonObject();
                                                     String code = cell.get("text").getAsString();
                                                     listener.getLogger().println(code);
-                                                    listener.getLogger().println(StringUtils.stripStart(interpreterManager.invokeInterpreter(code), "%text"));
+                                                    listener.getLogger().println(interpreterManager.invokeInterpreter(code, task, ws));
                                                 }
                                         }
                                         break;
                                     case py:
-                                        listener.getLogger().println(StringUtils.stripStart(interpreterManager.invokeInterpreter(tempFilePath.readToString()), "%text"));
+                                        listener.getLogger().println(interpreterManager.invokeInterpreter(tempFilePath.readToString(), task, ws));
                                         break;
                                     default:
                                         run.setResult(Result.FAILURE);
@@ -186,6 +187,11 @@ public class IPythonBuilder extends Builder implements SimpleBuildStep, Serializ
             return FormValidation.ok();
         }
 
+        public FormValidation doCheckTask(@QueryParameter String task) {
+            if (Util.fixEmptyAndTrim(task) == null)
+                return FormValidation.warning("Task name is required to save the artifacts");
+            return FormValidation.ok();
+        }
         @Override
         public boolean isApplicable(Class<? extends AbstractProject> aClass) {
             return true;

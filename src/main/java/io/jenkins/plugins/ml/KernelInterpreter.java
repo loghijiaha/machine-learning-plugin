@@ -28,6 +28,7 @@ import org.apache.zeppelin.interpreter.InterpreterException;
 import org.apache.zeppelin.interpreter.InterpreterResultMessage;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Interface for Kernel Interpreter (Eg: IPython ,R and Julia).
@@ -35,7 +36,7 @@ import java.io.IOException;
 
 public interface KernelInterpreter {
 
-    InterpreterResultMessage interpretCode(String code) throws IOException, InterpreterException;
+    List<InterpreterResultMessage> interpretCode(String code) throws IOException, InterpreterException;
     void start();
     void shutdown();
 

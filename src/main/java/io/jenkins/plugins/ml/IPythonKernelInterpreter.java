@@ -31,6 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Properties;
 
 public class IPythonKernelInterpreter implements KernelInterpreter  {
@@ -69,24 +70,20 @@ public class IPythonKernelInterpreter implements KernelInterpreter  {
     /**
      * IPython will be connected and interpreted through the object of this class.
      * @param code - python code to be executed
-     * @return the result of the interpreted code
+     * @return the list of result of the interpreted code
      */
     @Override
-    public InterpreterResultMessage interpretCode(String code) throws IOException, InterpreterException {
+    public List<InterpreterResultMessage> interpretCode(String code) throws IOException, InterpreterException {
         InterpreterResult result;
         InterpreterContext context = getInterpreterContext();
         result = interpreter.interpret(code, context);
         LOGGER.info(result.code().toString());
-        int sizeOfResult = context.out.toInterpreterResultMessage().size();
+        List<InterpreterResultMessage> rst = context.out.toInterpreterResultMessage();
 
-        // Context output will depend on the code to be interpreted
-        if( sizeOfResult != 0){
-            interpreterResultMessage = context.out.toInterpreterResultMessage().get(0);
-        }else{
-            // Contains non-output lines
-            interpreterResultMessage = new InterpreterResultMessage(InterpreterResult.Type.TEXT,"");
+        if (rst.size() > 0) {
+            return rst;
         }
-        return interpreterResultMessage;
+        return null;
     }
 
     public void start(){
