@@ -83,6 +83,7 @@ image:docs/images/file_parser.png[notebook]
 
 ==== Build Notebook
 
+* Choose a name for the Machine Leaning task folder (Eg: Training)
 * Use text editor to run python code directly
 * Use file path to run Jupyter Notebook or JSON
 
@@ -93,6 +94,7 @@ image:docs/images/file_builder.png[builder]
 ** Install link:https://github.com/jenkinsci/ansicolor-plugin[ANSI-Color plugin] for rich formatted output
 ** Aware of permissions for accessing I/O in the python code
 ** Make sure about `import` libraries used in the code installed properly
+** If there is any HTML/Images as outputs, all will be saved in the workspace under the Machine Leaning task folder
 
 === Contributing to the Plugin
 
