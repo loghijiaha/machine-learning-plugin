@@ -119,10 +119,9 @@ public class IPythonInterpreterManager extends InterpreterManager {
                     containsHTML = true;
                     break;
                 case IMG:
-                    // TODO
-//                    Dumper.dumpImage(new BufferedImage(5,4,8), step, workspace);
-//                    strBuild.append("Image added to " + task );
-//                    strBuild.append('\n');
+                    Dumper.dumpImage(interpreterResultMessage.getData(), task, workspace);
+                    strTEXTBuild.append("Image added to ").append(task);
+                    strTEXTBuild.append('\n');
                     break;
                 case TEXT:
                     strTEXTBuild.append(interpreterResultMessage.getData());

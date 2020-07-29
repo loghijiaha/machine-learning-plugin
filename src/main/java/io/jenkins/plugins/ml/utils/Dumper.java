@@ -29,7 +29,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.imageio.ImageIO;
+import javax.xml.bind.DatatypeConverter;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -72,11 +74,16 @@ public final class Dumper {
      * @param ws         the workspace
      * @throws IOException raise when write fails
      */
-    public static void dumpImage(BufferedImage data, String foldername, FilePath ws) throws IOException {
+    public static void dumpImage(String data, String foldername, FilePath ws) throws IOException {
         LocalDateTime dateObj = LocalDateTime.now();
-        String filename = File.separator + FORMAT_OBJ.format(dateObj) + ".jpg";
+        String filename = File.separator + FORMAT_OBJ.format(dateObj) + ".png";
         FilePath dumpPath = new FilePath(ws, foldername + filename);
-        ImageIO.write(data, "jpg", new File(dumpPath.getRemote()));
+        /* Decoding the data */
+        byte[] imageBytes = DatatypeConverter.parseBase64Binary(data);
+
+        /* read decoded image data */
+        BufferedImage img = ImageIO.read(new ByteArrayInputStream(imageBytes));
+        ImageIO.write(img, "png", new File(dumpPath.getRemote()));
         LOGGER.info("Success");
   }
 }
