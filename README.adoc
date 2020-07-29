@@ -31,6 +31,8 @@ link:https://ci.jenkins.io/job/Plugins/job/machine-learning-plugin/job/master/[i
 link:https://github.com/jenkinsci/machine-learning-plugin/graphs/contributors[image:https://img.shields.io/github/contributors/jenkinsci/machine-learning-plugin.svg?color=blue[Contributors]]
 link:https://gitter.im/jenkinsci/gsoc-machine-learning-project[image:https://badges.gitter.im/jenkinsci/machine-learning-plugin.svg[Gitter]]
 
+image:docs/images/jenkins-machine-learning-logo.png[]
+
 == Overview
 
 The main goal of this project is integrating Machine Learning workflow including Data preprocessing, Model Training, Evaluation and Prediction with Jenkins build tasks. This plugin is capable of executing code fragments via IPython kernel as currently supported by Jupyter.
