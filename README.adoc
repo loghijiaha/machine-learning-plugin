@@ -99,8 +99,8 @@ image:docs/images/file_builder.png[builder]
 === Troubleshooting
 
 If you are having trouble viewing the HTML files saved, check your browser console to see if there are any errors about Content Security Policy.
-This is often a culprit.
-If see errors, review link:https://wiki.jenkins.io/display/JENKINS/Configuring+Content+Security+Policy[Resolve issues on CSP] for instructions on how to resolve.
+This is often the problem.
+If you see the error above, then follow the link link:https://wiki.jenkins.io/display/JENKINS/Configuring+Content+Security+Policy[Resolve issues on CSP] for instructions on how to resolve.
 
 === Contributing to the Plugin
 
