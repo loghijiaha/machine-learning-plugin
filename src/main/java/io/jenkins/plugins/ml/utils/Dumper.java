@@ -61,8 +61,6 @@ public final class Dumper {
         String filename = File.separator + FORMAT_OBJ.format(dateObj) + ".html";
         FilePath dumpPath = new FilePath(ws, foldername + filename);
         dumpPath.write(data, "UTF-8");
-        // enable javascript to run
-        System.setProperty("hudson.model.DirectoryBrowserSupport.CSP", "");
         LOGGER.info("Success");
     }
 
