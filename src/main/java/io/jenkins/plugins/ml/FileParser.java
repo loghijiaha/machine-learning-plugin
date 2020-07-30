@@ -72,7 +72,7 @@ public class FileParser extends BuildWrapper {
         // Copy each file to the workspace
         projectWorkspace.ifPresent((workspace) -> {
             for (ParsableFile file : parsableFiles) {
-                FilePath copyFrom = new FilePath(new File(file.getFileName()));
+                FilePath copyFrom = workspace.child(file.getFileName());
                 FilePath copyTo;
                 LOGGER.info(String.format("Copying file from %s to %s", copyFrom.getName(), workspace.getName() + file.getSaveConverted()));
                 try {
