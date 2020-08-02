@@ -76,7 +76,7 @@ public class IPythonInterpreterManager extends InterpreterManager {
     }
 
     @Override
-    void initiateInterpreter() {
+    void initiateInterpreter() throws InterpreterException {
         kernelInterpreter = createInterpreter();
         kernelInterpreter.start();
     }
@@ -150,6 +150,10 @@ public class IPythonInterpreterManager extends InterpreterManager {
 
     @Override
     public void close() {
-        kernelInterpreter.shutdown();
+        try {
+            kernelInterpreter.shutdown();
+        } catch (InterpreterException e) {
+            e.printStackTrace();
+        }
     }
 }

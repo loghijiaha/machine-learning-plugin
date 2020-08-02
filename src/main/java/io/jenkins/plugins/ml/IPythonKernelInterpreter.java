@@ -45,7 +45,6 @@ public class IPythonKernelInterpreter implements KernelInterpreter  {
     private final long maxResult;
 
     private LazyOpenInterpreter interpreter;
-    private InterpreterResultMessage interpreterResultMessage ;
 
     /**
      * @param userConfig - user's configuration including server address etc.
@@ -86,21 +85,13 @@ public class IPythonKernelInterpreter implements KernelInterpreter  {
         return null;
     }
 
-    public void start(){
-        try {
-            interpreter.open();
-        } catch (InterpreterException e) {
-            LOGGER.error("Unsupported operation");
-        }
+    public void start() throws InterpreterException {
+        interpreter.open();
     }
 
     @Override
-    public void shutdown() {
-        try {
-            interpreter.close();
-        } catch (InterpreterException e) {
-            LOGGER.error("Unsupported operation for shutting down");
-        }
+    public void shutdown() throws InterpreterException {
+        interpreter.close();
     }
 
     @Override
