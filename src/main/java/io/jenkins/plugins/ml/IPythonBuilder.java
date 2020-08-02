@@ -40,6 +40,8 @@ import jenkins.tasks.SimpleBuildStep;
 import org.apache.zeppelin.interpreter.InterpreterException;
 import org.apache.zeppelin.jupyter.zformat.Note;
 import org.jenkinsci.Symbol;
+import org.kohsuke.accmod.Restricted;
+import org.kohsuke.accmod.restrictions.NoExternalUse;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 import org.slf4j.Logger;
@@ -82,81 +84,14 @@ public class IPythonBuilder extends Builder implements SimpleBuildStep, Serializ
             long launchTimeout = ipythonServerJobProperty.getServer().getLaunchTimeoutInMilliSeconds();
             long maxResults = ipythonServerJobProperty.getServer().getMaxResults();
             listener.getLogger().println("Executed server : " + serverName.toUpperCase());
+            // create configuration
+            IPythonUserConfig jobUserConfig = new IPythonUserConfig(serverAddress, launchTimeout, maxResults);
             // Get the right channel to execute the code
-            launcher.getChannel().call(new MasterToSlaveCallable<Void, Exception>() {
-
-                private static final long serialVersionUID = 1791985298575049757L;
-                @Override
-                public Void call() {
-                    // create configuration
-                    IPythonUserConfig jobUserConfig = new IPythonUserConfig(serverAddress,launchTimeout,maxResults);
-                    try ( IPythonInterpreterManager interpreterManager = new IPythonInterpreterManager(jobUserConfig)){
-                        interpreterManager.initiateInterpreter();
-                        LOGGER.info("Connection initiated successfully");
-                        listener.getLogger().println("Platform : " + System.getProperty("os.name").toUpperCase());
-                        listener.getLogger().println("Type : " + parserType.toUpperCase());
-                        if(parserType.equals("text")){
-                            listener.getLogger().println(interpreterManager.invokeInterpreter(code, task, ws));
-                        } else {
-                            if(Util.fixEmptyAndTrim(filePath) != null){
-                                // Run builder on selected notebook
-                                String extension = filePath.substring(filePath.lastIndexOf(".") + 1);
-                                FileExtension ext;
-                                try {
-                                    // assign the extension from the enum
-                                    ext = FileExtension.valueOf(extension);
-                                } catch (Exception e) {
-                                    ext = FileExtension.txt;
-                                }
-                                // create file path for the file
-                                FilePath tempFilePath = ws.child(filePath);
-                                listener.getLogger().println("Output : ");
-                                switch (ext) {
-                                    case ipynb:
-                                        listener.getLogger().println((interpreterManager.invokeInterpreter(ConvertHelper.jupyterToText(tempFilePath), task, ws)));
-                                        break;
-                                    case json:
-                                        // Zeppelin note book or JSON file will be interpreted line by line
-                                        try (final InputStreamReader inputStreamReader = new InputStreamReader(tempFilePath.read(), Charset.forName("UTF-8"))) {
-                                            Gson gson = new GsonBuilder().create();
-                                            Note n = gson.fromJson(inputStreamReader, Note.class);
-                                            JsonObject obj = gson.toJsonTree(n).getAsJsonObject();
-                                            JsonArray array = obj.get("paragraphs").getAsJsonArray();
-                                            for (JsonElement element : array)
-                                                if (element.isJsonObject()) {
-                                                    // get each cell form the JSON element
-                                                    JsonObject cell = element.getAsJsonObject();
-                                                    String code = cell.get("text").getAsString();
-                                                    listener.getLogger().println(code);
-                                                    listener.getLogger().println(interpreterManager.invokeInterpreter(code, task, ws));
-                                                }
-                                        }
-                                        break;
-                                    case py:
-                                        listener.getLogger().println(interpreterManager.invokeInterpreter(tempFilePath.readToString(), task, ws));
-                                        break;
-                                    default:
-                                        run.setResult(Result.FAILURE);
-                                        throw new AbortException(filePath + " is not supported by the machine learning plugin");
-                                }
-                            }else {
-                                run.setResult(Result.FAILURE);
-                                throw new AbortException("ERROR : File path is empty " + filePath);
-                            }
-                        }
-
-                    } catch (InterruptedException | InterpreterException | IOException e) {
-                        e.printStackTrace(listener.getLogger());
-                    }
-
-                    return null;
-                }
-            });
+            run.setResult(launcher.getChannel().call(new ExecutorImpl(ws, listener, jobUserConfig)));
 
         } catch (Throwable e) {
             e.printStackTrace(listener.getLogger());
             throw  new AbortException(e.getMessage());
-
         }
     }
 
@@ -202,5 +137,84 @@ public class IPythonBuilder extends Builder implements SimpleBuildStep, Serializ
             return "IPython Builder";
         }
 
+    }
+
+    @Restricted(NoExternalUse.class)
+    private final class ExecutorImpl extends MasterToSlaveCallable<Result, Exception> {
+
+        private FilePath ws;
+        private TaskListener listener;
+        private IPythonUserConfig jobUserConfig;
+
+        private ExecutorImpl(FilePath ws, TaskListener ls, IPythonUserConfig cf) {
+            this.ws = ws;
+            this.listener = ls;
+            this.jobUserConfig = cf;
+        }
+
+        @Override
+        public Result call() {
+
+            try (IPythonInterpreterManager interpreterManager = new IPythonInterpreterManager(jobUserConfig)) {
+                interpreterManager.initiateInterpreter();
+                LOGGER.info("Connection initiated successfully");
+                listener.getLogger().println("Platform : " + System.getProperty("os.name").toUpperCase());
+                listener.getLogger().println("Type : " + parserType.toUpperCase());
+                if (parserType.equals("text")) {
+                    listener.getLogger().println(interpreterManager.invokeInterpreter(code, task, ws));
+                } else {
+                    if (Util.fixEmptyAndTrim(filePath) != null) {
+                        // Run builder on selected notebook
+                        String extension = filePath.substring(filePath.lastIndexOf(".") + 1);
+                        FileExtension ext;
+                        try {
+                            // assign the extension from the enum
+                            ext = FileExtension.valueOf(extension);
+                        } catch (Exception e) {
+                            ext = FileExtension.txt;
+                        }
+                        // create file path for the file
+                        FilePath tempFilePath = ws.child(filePath);
+                        listener.getLogger().println("Output : ");
+                        switch (ext) {
+                            case ipynb:
+                                listener.getLogger().println((interpreterManager.invokeInterpreter(ConvertHelper.jupyterToText(tempFilePath), task, ws)));
+                                break;
+                            case json:
+                                // Zeppelin note book or JSON file will be interpreted line by line
+                                try (final InputStreamReader inputStreamReader = new InputStreamReader(tempFilePath.read(), Charset.forName("UTF-8"))) {
+                                    Gson gson = new GsonBuilder().create();
+                                    Note n = gson.fromJson(inputStreamReader, Note.class);
+                                    JsonObject obj = gson.toJsonTree(n).getAsJsonObject();
+                                    JsonArray array = obj.get("paragraphs").getAsJsonArray();
+                                    for (JsonElement element : array)
+                                        if (element.isJsonObject()) {
+                                            // get each cell form the JSON element
+                                            JsonObject cell = element.getAsJsonObject();
+                                            String code = cell.get("text").getAsString();
+                                            listener.getLogger().println(code);
+                                            listener.getLogger().println(interpreterManager.invokeInterpreter(code, task, ws));
+                                        }
+                                }
+                                break;
+                            case py:
+                                listener.getLogger().println(interpreterManager.invokeInterpreter(tempFilePath.readToString(), task, ws));
+                                break;
+                            default:
+                                listener.fatalError(filePath + " is not supported by the machine learning plugin");
+                                return Result.FAILURE;
+                        }
+                    } else {
+                        listener.fatalError("The file path is empty");
+                        return Result.FAILURE;
+                    }
+                }
+
+            } catch (InterruptedException | InterpreterException | IOException e) {
+                e.printStackTrace(listener.getLogger());
+                return Result.FAILURE;
+            }
+            return Result.SUCCESS;
+        }
     }
 }
