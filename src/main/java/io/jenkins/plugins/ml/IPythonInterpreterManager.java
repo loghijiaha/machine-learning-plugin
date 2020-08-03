@@ -108,6 +108,10 @@ public class IPythonInterpreterManager extends InterpreterManager {
     protected String invokeInterpreter(String code, String task, FilePath workspace)
             throws InterpreterException, IOException, InterruptedException {
         List<InterpreterResultMessage> interpreterResultMessages = kernelInterpreter.interpretCode(code);
+        if (interpreterResultMessages == null) {
+            LOGGER.info("Returning empty message for non-output code");
+            return "";
+        }
         boolean containsHTML = false;
         StringBuilder strTEXTBuild = new StringBuilder();
         StringBuilder strHTMLBuild = new StringBuilder();

@@ -34,6 +34,8 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -83,7 +85,11 @@ public final class Dumper {
 
         /* read decoded image data */
         BufferedImage img = ImageIO.read(new ByteArrayInputStream(imageBytes));
-        ImageIO.write(img, "png", new File(dumpPath.getRemote()));
+        File imgFile = new File(dumpPath.getRemote());
+        if (!imgFile.getParentFile().exists()) {
+            Files.createDirectories(Paths.get(imgFile.getParent()));
+        }
+        ImageIO.write(img, "png", imgFile);
         LOGGER.info("Success");
   }
 }
