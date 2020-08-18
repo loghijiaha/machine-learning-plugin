@@ -49,8 +49,6 @@ import org.kohsuke.accmod.restrictions.NoExternalUse;
 import org.kohsuke.stapler.AncestorInPath;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -60,6 +58,7 @@ import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 /**
@@ -69,7 +68,7 @@ public class IPythonBuilder extends Builder implements SimpleBuildStep, Serializ
 
     private static final long serialVersionUID = 1L;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(IPythonBuilder.class);
+    private static final Logger LOGGER = Logger.getLogger(IPythonBuilder.class.getName());
 
     private final String code;
     private final String filePath;
@@ -124,14 +123,8 @@ public class IPythonBuilder extends Builder implements SimpleBuildStep, Serializ
             IPythonUserConfig jobUserConfig = new IPythonUserConfig(kernel, launchTimeout, maxResults);
             // Get the right channel to execute the code
             run.setResult(launcher.getChannel().call(new ExecutorImpl(ws, listener, jobUserConfig)));
-            ResultAction a = run.getAction(ResultAction.class);
             // search and update for action after the build
-            if (a != null) {
-                run.replaceAction(a.updateSummary());
-            } else {
-                run.addAction(new ResultAction(run, ws));
-            }
-
+            run.addOrReplaceAction(new ResultAction(run, ws));
 
         } catch (Throwable e) {
             e.printStackTrace(listener.getLogger());

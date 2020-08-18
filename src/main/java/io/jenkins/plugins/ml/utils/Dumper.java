@@ -36,9 +36,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Random;
+import java.util.Objects;
 
 /**
  * Dumper- A helping tool for save html or image files in the workspace
@@ -46,8 +44,7 @@ import java.util.Random;
 public final class Dumper {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Dumper.class);
-    private static final DateTimeFormatter FORMAT_OBJ = DateTimeFormatter.ofPattern("dd-MM-yyyy-hh-mm-ss");
-    private static final Random random = new Random(10000);
+
     private Dumper() {
     }
 
@@ -62,11 +59,12 @@ public final class Dumper {
      */
     public static void dumpHtml(String data, String foldername, FilePath ws)
             throws IOException, InterruptedException {
-        LocalDateTime dateObj = LocalDateTime.now();
-        // Added a random number to save images which have same timestamp
-        String filename = File.separator + FORMAT_OBJ.format(dateObj) + random.nextInt() + ".html";
+        int random = Math.abs(Objects.hash(data, foldername));
+        // Added a random number to save images
+        String filename = File.separator + random + ".html";
         FilePath dumpPath = new FilePath(ws, foldername + filename);
         dumpPath.write(data, "UTF-8");
+        LOGGER.info("Archived " + filename);
     }
 
     /**
@@ -78,9 +76,10 @@ public final class Dumper {
      * @throws IOException raise when write fails
      */
     public static void dumpImage(String data, String foldername, FilePath ws) throws IOException {
-        LocalDateTime dateObj = LocalDateTime.now();
-        // Added a random number to save images which have same timestamp
-        String filename = File.separator + FORMAT_OBJ.format(dateObj) + random.nextInt() + ".png";
+
+        int random = Math.abs(Objects.hash(data, foldername));
+        // Added a random number to save images
+        String filename = File.separator + random + ".png";
         FilePath dumpPath = new FilePath(ws, foldername + filename);
         /* Decoding the data */
         byte[] imageBytes = DatatypeConverter.parseBase64Binary(data);
@@ -92,5 +91,7 @@ public final class Dumper {
             Files.createDirectories(Paths.get(imgFile.getParent()));
         }
         ImageIO.write(img, "png", imgFile);
-  }
+        LOGGER.info("Archived " + filename);
+
+    }
 }

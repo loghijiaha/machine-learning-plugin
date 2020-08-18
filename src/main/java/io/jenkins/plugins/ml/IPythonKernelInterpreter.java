@@ -78,10 +78,8 @@ public class IPythonKernelInterpreter implements KernelInterpreter  {
      */
     @Override
     public List<InterpreterResultMessage> interpretCode(String code) throws IOException, InterpreterException {
-        InterpreterResult result;
         InterpreterContext context = getInterpreterContext();
-        result = interpreter.interpret(code, context);
-        LOGGER.info(result.code().toString());
+        interpreter.interpret(code, context);
         List<InterpreterResultMessage> rst = context.out.toInterpreterResultMessage();
 
         if (rst.size() > 0) {
@@ -96,6 +94,11 @@ public class IPythonKernelInterpreter implements KernelInterpreter  {
 
     @Override
     public void shutdown() throws InterpreterException {
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         interpreter.close();
     }
 

@@ -83,7 +83,6 @@ public class IPythonInterpreterManager extends InterpreterManager {
 
     @Override
     void closeInterpreter() {
-        LOGGER.info(kernelInterpreter.toString());
         this.close();
     }
 
@@ -109,7 +108,6 @@ public class IPythonInterpreterManager extends InterpreterManager {
             throws InterpreterException, IOException, InterruptedException {
         List<InterpreterResultMessage> interpreterResultMessages = kernelInterpreter.interpretCode(code);
         if (interpreterResultMessages == null) {
-            LOGGER.info("Returning empty message for non-output code");
             return "";
         }
         boolean containsHTML = false;
@@ -138,7 +136,6 @@ public class IPythonInterpreterManager extends InterpreterManager {
         if (containsHTML) {
             Dumper.dumpHtml(strHTMLBuild.toString(), task, workspace);
             strTEXTBuild.append("HTML added to ").append(task);
-            LOGGER.info("Successfully saved ", task);
         }
         return strTEXTBuild.toString();
     }
