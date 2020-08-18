@@ -34,9 +34,10 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Objects;
+import java.util.UUID;
 
 /**
  * Dumper- A helping tool for save html or image files in the workspace
@@ -59,7 +60,7 @@ public final class Dumper {
      */
     public static void dumpHtml(String data, String foldername, FilePath ws)
             throws IOException, InterruptedException {
-        int random = Math.abs(Objects.hash(data, foldername));
+        UUID random = UUID.nameUUIDFromBytes(data.getBytes(StandardCharsets.UTF_8));
         // Added a random number to save images
         String filename = File.separator + random + ".html";
         FilePath dumpPath = new FilePath(ws, foldername + filename);
@@ -77,7 +78,7 @@ public final class Dumper {
      */
     public static void dumpImage(String data, String foldername, FilePath ws) throws IOException {
 
-        int random = Math.abs(Objects.hash(data, foldername));
+        UUID random = UUID.nameUUIDFromBytes(data.getBytes(StandardCharsets.UTF_8));
         // Added a random number to save images
         String filename = File.separator + random + ".png";
         FilePath dumpPath = new FilePath(ws, foldername + filename);

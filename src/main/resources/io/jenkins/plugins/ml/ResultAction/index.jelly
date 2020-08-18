@@ -55,7 +55,9 @@
                             </j:if>
                             <li>
                                 <a href="${it.href}/${a.task}/${a.fileName}">${a.fileName}</a>
-                                <IMG SRC="${it.href}/${a.task}/${a.fileName}"/>
+                                <div style="max-height:450px; max-width:450px; overflow: auto">
+                                    <img src="${it.href}/${a.task}/${a.fileName}"/>
+                                </div>
                             </li>
                         </j:forEach>
                     </div>

@@ -94,11 +94,6 @@ public class IPythonKernelInterpreter implements KernelInterpreter  {
 
     @Override
     public void shutdown() throws InterpreterException {
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         interpreter.close();
     }
 
