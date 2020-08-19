@@ -106,12 +106,18 @@ public class IPythonBuilder extends Builder implements SimpleBuildStep, Serializ
     @SuppressFBWarnings("NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE")
     public void perform(@Nonnull Run<?, ?> run, @Nonnull FilePath ws, @Nonnull Launcher launcher, @Nonnull TaskListener listener) throws AbortException {
         try {
-
+            if (parserType.isEmpty() || task.isEmpty() || kernelName.isEmpty()) {
+                throw new AbortException("IPython builder is mis-configured ");
+            }
             // get the properties of the job
-            String serverName = getServer().getServerName();
-            String kernel = getServer().getKernel();
-            long launchTimeout = getServer().getLaunchTimeoutInMilliSeconds();
-            long maxResults = getServer().getMaxResults();
+            Server server = getServer();
+            if (server == null) {
+                throw new AbortException("No valid kernel exist for " + kernelName);
+            }
+            String serverName = server.getServerName();
+            String kernel = server.getKernel();
+            long launchTimeout = server.getLaunchTimeoutInMilliSeconds();
+            long maxResults = server.getMaxResults();
             listener.getLogger().println("Executed kernel : " + kernel.toUpperCase());
             listener.getLogger().println("Language : " + serverName.toUpperCase());
             // create configuration
@@ -189,6 +195,7 @@ public class IPythonBuilder extends Builder implements SimpleBuildStep, Serializ
      *
      * @return the kernel name
      */
+    @CheckForNull
     public String getKernelName() {
         return kernelName;
     }
