@@ -62,7 +62,7 @@ public class IPythonKernelInterpreter implements KernelInterpreter  {
         Properties properties = new Properties();
         properties.setProperty("zeppelin.python.maxResult", String.valueOf(maxResult));
         properties.setProperty("zeppelin.python.gatewayserver_address", "127.0.0.1");
-        properties.setProperty("zeppelin.ipython.launch.timeout", String.valueOf(iPythonLaunchTimeout));
+        properties.setProperty("zeppelin.jupyter.kernel.launch.timeout", String.valueOf(iPythonLaunchTimeout));
         properties.setProperty("zeppelin.py4j.useAuth","false");
 
         // Initiate a Lazy interpreter

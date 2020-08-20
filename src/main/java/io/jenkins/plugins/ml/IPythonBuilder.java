@@ -322,9 +322,6 @@ public class IPythonBuilder extends Builder implements SimpleBuildStep, Serializ
                 LOGGER.info("Connection initiated successfully");
                 listener.getLogger().println("Platform : " + System.getProperty("os.name").toUpperCase());
                 listener.getLogger().println("Type : " + parserType.toUpperCase());
-                listener.getLogger().println("Working directory : " + ws.getRemote());
-                // Change working directory as workspace directory
-                interpreterManager.invokeInterpreter("import os\nos.chdir('" + ws.getRemote() + "')", "test", ws);
                 if (parserType.equals("text")) {
                     listener.getLogger().println(interpreterManager.invokeInterpreter(code, task, ws));
                 } else {

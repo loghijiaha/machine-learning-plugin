@@ -32,7 +32,7 @@
         <f:textbox  />
     </f:entry>
     <f:entry title="Launch timeout" field="launchTimeout">
-        <f:textbox default="5" />
+        <f:textbox default="10"/>
     </f:entry>
     <f:entry title="Max results" field="maxResults">
         <f:textbox default="3" />
