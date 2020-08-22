@@ -24,10 +24,7 @@
 
 package io.jenkins.plugins.ml;
 
-import org.apache.zeppelin.interpreter.InterpreterException;
 import org.junit.Test;
-
-import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
 
@@ -36,8 +33,8 @@ public class IPythonUserConfigTest {
     private IPythonUserConfig userConfig;
 
     @Test
-    public void testDefaultIPythonConfig() throws InterpreterException, IOException {
-        userConfig = new IPythonUserConfig("python", 1000, 3);
+    public void testDefaultIPythonConfig() {
+        userConfig = new IPythonUserConfig("python", 1000, 3, ".");
         assertEquals("Kernel is not matching", "python", userConfig.getkernel());
         assertEquals("Timeout not matched",1000,userConfig.getIPythonLaunchTimeout());
         assertEquals("Max results not matched",3,userConfig.getMaxResult());

@@ -120,7 +120,7 @@ public class IPythonBuilder extends Builder implements SimpleBuildStep, Serializ
             listener.getLogger().println("Executed kernel : " + kernel.toUpperCase());
             listener.getLogger().println("Language : " + serverName.toUpperCase());
             // create configuration
-            IPythonUserConfig jobUserConfig = new IPythonUserConfig(kernel, launchTimeout, maxResults);
+            IPythonUserConfig jobUserConfig = new IPythonUserConfig(kernel, launchTimeout, maxResults, ws.getRemote());
             // Get the right channel to execute the code
             run.setResult(launcher.getChannel().call(new ExecutorImpl(ws, listener, jobUserConfig)));
             // search and update for action after the build

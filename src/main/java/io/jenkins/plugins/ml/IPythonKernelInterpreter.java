@@ -46,6 +46,7 @@ public class IPythonKernelInterpreter implements KernelInterpreter  {
     private final String kernel;
     private final long iPythonLaunchTimeout;
     private final long maxResult;
+    private final String workingDirectory;
 
     private LazyOpenInterpreter interpreter;
     private ResourcePool resourcePool;
@@ -57,6 +58,7 @@ public class IPythonKernelInterpreter implements KernelInterpreter  {
         this.kernel = userConfig.getkernel();
         this.iPythonLaunchTimeout = userConfig.getIPythonLaunchTimeout();
         this.maxResult = userConfig.getMaxResult();
+        this.workingDirectory = userConfig.getWorkingDirectory();
 
         // properties for the interpreter
         Properties properties = new Properties();
@@ -64,6 +66,8 @@ public class IPythonKernelInterpreter implements KernelInterpreter  {
         properties.setProperty("zeppelin.python.gatewayserver_address", "127.0.0.1");
         properties.setProperty("zeppelin.jupyter.kernel.launch.timeout", String.valueOf(iPythonLaunchTimeout));
         properties.setProperty("zeppelin.py4j.useAuth","false");
+        // Hack to change teh working directory
+        properties.setProperty("jenkins.plugin.working.directory", userConfig.getWorkingDirectory());
 
         // Initiate a Lazy interpreter
         interpreter = new LazyOpenInterpreter(new JupyterInterpreter(properties));
