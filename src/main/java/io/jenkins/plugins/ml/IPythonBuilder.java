@@ -315,6 +315,7 @@ public class IPythonBuilder extends Builder implements SimpleBuildStep, Serializ
                 LOGGER.info("Connection initiated successfully");
                 listener.getLogger().println("Platform : " + System.getProperty("os.name").toUpperCase());
                 listener.getLogger().println("Type : " + parserType.toUpperCase());
+                listener.getLogger().println("Working directory : " + ws.getRemote());
                 if (parserType.equals("text")) {
                     listener.getLogger().println(interpreterManager.invokeInterpreter(code, task, ws));
                 } else {
