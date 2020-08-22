@@ -58,6 +58,7 @@ import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 
@@ -69,6 +70,8 @@ public class IPythonBuilder extends Builder implements SimpleBuildStep, Serializ
     private static final long serialVersionUID = 1L;
 
     private static final Logger LOGGER = Logger.getLogger(IPythonBuilder.class.getName());
+    private static final java.util.logging.Logger GRPC_IO_LOGGER = java.util.logging.Logger.getLogger("io.grpc.internal");
+    private static final Level GRPC_IO_LOGGER_ORIGINAL_LEVEL = GRPC_IO_LOGGER.getLevel();
 
     private final String code;
     private final String filePath;
@@ -104,6 +107,8 @@ public class IPythonBuilder extends Builder implements SimpleBuildStep, Serializ
     @Override
     @SuppressFBWarnings("NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE")
     public void perform(@Nonnull Run<?, ?> run, @Nonnull FilePath ws, @Nonnull Launcher launcher, @Nonnull TaskListener listener) throws AbortException {
+        // Disable GRPC internal exceptions due to SEVERE log message when closing kernel interpreter
+        GRPC_IO_LOGGER.setLevel(Level.OFF);
         try {
             if (parserType.isEmpty() || task.isEmpty() || kernelName.isEmpty()) {
                 throw new AbortException("IPython builder is mis-configured ");
@@ -129,6 +134,8 @@ public class IPythonBuilder extends Builder implements SimpleBuildStep, Serializ
         } catch (Throwable e) {
             e.printStackTrace(listener.getLogger());
             throw  new AbortException(e.getMessage());
+        } finally {
+            GRPC_IO_LOGGER.setLevel(GRPC_IO_LOGGER_ORIGINAL_LEVEL);
         }
     }
 
