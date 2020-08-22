@@ -95,6 +95,13 @@ image:docs/images/file_builder.png[builder]
 ** Make sure about `import` libraries used in the code installed properly
 ** If there is any HTML/Images as outputs, all will be saved in the workspace under the Machine Leaning task folder
 
+==== Images and HTMLs
+
+Images and HTMLs in the notebook will be saved in the workspace.
+Those artifacts can be viewed using the action in the left side panel.
+
+image:docs/images/image_view.png[image_and_htmls]
+
 === Troubleshooting
 
 If you are having trouble viewing the HTML files saved, check your browser console to see if there are any errors about Content Security Policy.
