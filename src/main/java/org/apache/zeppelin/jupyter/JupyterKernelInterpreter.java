@@ -129,7 +129,7 @@ public class JupyterKernelInterpreter extends AbstractInterpreter {
      * non-empty return value mean the errors when checking kernel prerequisite.
      * empty value mean kernel prerequisite is met.
      *
-     * @param pythonExec string for python executive command
+     * @param pythonExec string for python executable
      * @return check result of checking kernel prerequisite.
      */
     public String checkKernelPrerequisite(String pythonExec) {

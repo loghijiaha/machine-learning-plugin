@@ -56,18 +56,18 @@ public class IPythonUserConfig implements Serializable {
     }
 
     /**
-     * Gets .
+     * Gets kernel
      *
-     * @return the
+     * @return kernel
      */
     public String getkernel() {
         return kernel;
     }
 
     /**
-     * Gets i python launch timeout.
+     * Gets ipython launch timeout.
      *
-     * @return the i python launch timeout
+     * @return ipython launch timeout
      */
     public long getIPythonLaunchTimeout() {
         return iPythonLaunchTimeout;

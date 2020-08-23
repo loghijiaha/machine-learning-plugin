@@ -186,7 +186,7 @@ public class Server extends AbstractDescribableImpl<Server> {
          * @param launchTimeout the launch timeout
          * @param maxResults    the max results
          * @return the form validation
-         * @throws Exception the exception
+         * @throws Exception throws NumberFormatException when passing invalid maxResults
          */
         @POST
         public FormValidation doValidate(
