@@ -43,8 +43,8 @@ public class ConvertHelper {
 
     /**
      * Note is a Zeppelin formatted object which has paragraphs instead of cell when converting Jupyter notebooks. Paragraphs can be identified using config attribute as either contains
-     * markdown --> ace/mode/markdown or
-     * code  --> ace/mode/python
+     * markdown ace/mode/markdown or
+     * code ace/mode/python
      */
     public static final String MARKDOWN_ANNOTATION = "ace/mode/markdown";
 

@@ -28,6 +28,9 @@ package io.jenkins.plugins.ml;
 import java.io.Serializable;
 import java.util.Objects;
 
+/**
+ * The type Python user config.
+ */
 public class IPythonUserConfig implements Serializable {
 
     private static final long serialVersionUID = 7965902849225659175L;
@@ -39,8 +42,12 @@ public class IPythonUserConfig implements Serializable {
 
     /**
      * Constructor for configuration
+     *
+     * @param kernel               the kernel
+     * @param iPythonLaunchTimeout the python launch timeout
+     * @param maxResult            the max result
+     * @param workingDirectory     the working directory
      */
-
     public IPythonUserConfig(String kernel, long iPythonLaunchTimeout, long maxResult, String workingDirectory) {
         this.kernel = kernel;
         this.iPythonLaunchTimeout = iPythonLaunchTimeout;
@@ -48,21 +55,42 @@ public class IPythonUserConfig implements Serializable {
         this.workingDirectory = workingDirectory;
     }
 
+    /**
+     * Gets .
+     *
+     * @return the
+     */
     public String getkernel() {
         return kernel;
     }
 
+    /**
+     * Gets i python launch timeout.
+     *
+     * @return the i python launch timeout
+     */
     public long getIPythonLaunchTimeout() {
         return iPythonLaunchTimeout;
     }
 
+    /**
+     * Gets max result.
+     *
+     * @return the max result
+     */
     public long getMaxResult() {
         return maxResult;
     }
 
+    /**
+     * Gets working directory.
+     *
+     * @return the working directory
+     */
     public String getWorkingDirectory() {
         return workingDirectory;
     }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

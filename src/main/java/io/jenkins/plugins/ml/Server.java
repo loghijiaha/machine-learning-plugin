@@ -37,6 +37,9 @@ import org.kohsuke.stapler.verb.POST;
 import javax.annotation.Nonnull;
 import java.util.regex.Pattern;
 
+/**
+ * The type Server.
+ */
 public class Server extends AbstractDescribableImpl<Server> {
     private final String serverName;
     private final String kernel;
@@ -45,6 +48,14 @@ public class Server extends AbstractDescribableImpl<Server> {
 
     private static final Pattern pattern = Pattern.compile("^[a-zA-Z0-9_]+$");
 
+    /**
+     * Instantiates a new Server.
+     *
+     * @param serverName    the server name
+     * @param kernel        the kernel
+     * @param launchTimeout the launch timeout
+     * @param maxResults    the max results
+     */
     @DataBoundConstructor
     public Server(String serverName, String kernel, long launchTimeout, long maxResults) {
         this.serverName = serverName;
@@ -53,22 +64,47 @@ public class Server extends AbstractDescribableImpl<Server> {
         this.maxResults = maxResults;
     }
 
+    /**
+     * Gets server name.
+     *
+     * @return the server name
+     */
     public String getServerName() {
         return serverName;
     }
 
+    /**
+     * Gets launch timeout.
+     *
+     * @return the launch timeout
+     */
     public long getLaunchTimeout() {
         return launchTimeout;
     }
 
+    /**
+     * Gets launch timeout in milli seconds.
+     *
+     * @return the launch timeout in milli seconds
+     */
     public long getLaunchTimeoutInMilliSeconds() {
-        return launchTimeout*1000;
+        return launchTimeout * 1000;
     }
 
+    /**
+     * Gets max results.
+     *
+     * @return the max results
+     */
     public long getMaxResults() {
         return maxResults;
     }
 
+    /**
+     * Gets kernel.
+     *
+     * @return the kernel
+     */
     public String getKernel() {
         return kernel;
     }
@@ -78,6 +114,9 @@ public class Server extends AbstractDescribableImpl<Server> {
         return null;
     }
 
+    /**
+     * The type Descriptor.
+     */
     @Extension
     public static class DescriptorImpl extends Descriptor<Server> {
         @Nonnull
@@ -86,6 +125,12 @@ public class Server extends AbstractDescribableImpl<Server> {
             return "Server";
         }
 
+        /**
+         * Do check server name form validation.
+         *
+         * @param serverName the server name
+         * @return the form validation
+         */
         public FormValidation doCheckServerName(@QueryParameter String serverName) {
             if( Util.fixEmptyAndTrim(serverName) == null){
                 return FormValidation.warning("* Optional ");
@@ -98,18 +143,30 @@ public class Server extends AbstractDescribableImpl<Server> {
             }
         }
 
+        /**
+         * Do check launch timeout form validation.
+         *
+         * @param launchTimeout the launch timeout
+         * @return the form validation
+         */
         public FormValidation doCheckLaunchTimeout(@QueryParameter String launchTimeout) {
-           try{
-               Integer num = Integer.valueOf(launchTimeout);
-               if(num >= 0){
-                   return FormValidation.ok();
-               }
-           }catch (Exception e){
-               return FormValidation.error("Timeout should be a valid number ");
-           }
-           return FormValidation.ok();
+            try {
+                Integer num = Integer.valueOf(launchTimeout);
+                if (num >= 0) {
+                    return FormValidation.ok();
+                }
+            } catch (Exception e) {
+                return FormValidation.error("Timeout should be a valid number ");
+            }
+            return FormValidation.ok();
         }
 
+        /**
+         * Do check max results form validation.
+         *
+         * @param maxResults the max results
+         * @return the form validation
+         */
         public FormValidation doCheckMaxResults(@QueryParameter String maxResults) {
             try{
                 Integer num = Integer.valueOf(maxResults);
@@ -124,13 +181,19 @@ public class Server extends AbstractDescribableImpl<Server> {
 
         /**
          * Validate the server by testing it
+         *
+         * @param kernel        the kernel
+         * @param launchTimeout the launch timeout
+         * @param maxResults    the max results
+         * @return the form validation
+         * @throws Exception the exception
          */
         @POST
         public FormValidation doValidate(
                 @QueryParameter String kernel,
                 @QueryParameter String launchTimeout,
-                @QueryParameter String maxResults
-                                         ) throws Exception {
+                @QueryParameter String maxResults)
+                throws Exception {
 
             if (Util.fixEmptyAndTrim(kernel) != null) {
                 try{
