@@ -1,5 +1,14 @@
 # Changelog
 
+## [machine-learning-1.0.1](https://github.com/jenkinsci/machine-learning-plugin/tree/machine-learning-1.0.1) (2020-08-24)
+
+[Full Changelog](https://github.com/jenkinsci/machine-learning-plugin/compare/machine-learning-1.0...machine-learning-1.0.1)
+
+**Merged pull requests:**
+
+- Patch class loader [\#64](https://github.com/jenkinsci/machine-learning-plugin/pull/64) ([Loghijiaha](https://github.com/Loghijiaha))
+- Updated changelog [\#63](https://github.com/jenkinsci/machine-learning-plugin/pull/63) ([Loghijiaha](https://github.com/Loghijiaha))
+
 ## [machine-learning-1.0](https://github.com/jenkinsci/machine-learning-plugin/tree/machine-learning-1.0) (2020-08-23)
 
 [Full Changelog](https://github.com/jenkinsci/machine-learning-plugin/compare/machine-learning-0.1-alpha-2...machine-learning-1.0)
