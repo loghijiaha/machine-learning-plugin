@@ -27,7 +27,7 @@ package io.jenkins.plugins.ml;
 import org.apache.zeppelin.interpreter.*;
 import org.apache.zeppelin.resource.LocalResourcePool;
 import org.apache.zeppelin.resource.ResourcePool;
-import org.apache.zeppelin2.jupyter.JupyterInterpreter;
+import io.jenkins.plugins.ml.jupyter.JupyterInterpreter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

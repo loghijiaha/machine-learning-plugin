@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.zeppelin2.interpreter.util;
+package io.jenkins.plugins.ml.util;
 
 import org.apache.commons.exec.*;
 import org.apache.commons.lang3.StringUtils;

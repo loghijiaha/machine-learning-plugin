@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.zeppelin2.jupyter;
+package io.jenkins.plugins.ml.jupyter;
 
 import io.grpc.ManagedChannelBuilder;
 import org.apache.commons.exec.CommandLine;
@@ -31,7 +31,7 @@ import org.apache.zeppelin.interpreter.thrift.InterpreterCompletion;
 import org.apache.zeppelin.interpreter.util.InterpreterOutputStream;
 import org.apache.zeppelin.jupyter.JupyterKernelClient;
 import org.apache.zeppelin.jupyter.JupyterZeppelinContext;
-import org.apache.zeppelin2.interpreter.util.ProcessLauncher;
+import io.jenkins.plugins.ml.util.ProcessLauncher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
