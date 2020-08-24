@@ -15,9 +15,8 @@
  * limitations under the License.
  */
 
-package org.apache.zeppelin.interpreter.util;
+package org.apache.zeppelin2.interpreter.util;
 
-import org.apache.commons.exec.LogOutputStream;
 import org.apache.commons.exec.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
