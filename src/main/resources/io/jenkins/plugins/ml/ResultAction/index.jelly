@@ -80,6 +80,10 @@
                             </j:if>
                             <li>
                                 <a href="${it.href}/${b.task}/${b.fileName}">${b.fileName}</a>
+                                <span>
+                                    <iframe src="${it.href}/${b.task}/${b.fileName}" width="100%" height="200" style="border:1px solid black;" allowTransparency="true" scrolling="yes" frameborder="0" >
+                                    </iframe>
+                                </span>
                             </li>
                         </j:forEach>
                     </div>
