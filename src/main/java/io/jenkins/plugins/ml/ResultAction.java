@@ -128,11 +128,6 @@ public class ResultAction implements RunAction2 {
             if (path.exists()) {
                 imageFiles = getVisualsByPath(path, "png");
                 htmlFiles = getVisualsByPath(path, "html");
-//                Collections.sort(imageFiles, new Comparator<Summary>() {
-//                    public int compare(Summary s1, Summary s2) {
-//                        return s1.getTask().compareTo(s2.getTask());
-//                    }
-//                });
             }
         } catch (Exception e) {
             e.printStackTrace();

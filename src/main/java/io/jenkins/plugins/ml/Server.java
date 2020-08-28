@@ -108,7 +108,7 @@ public class Server extends AbstractDescribableImpl<Server> {
      * @return the kernel
      */
     public String getKernel() {
-        return kernel;
+        return Util.fixEmptyAndTrim(kernel);
     }
 
     @Override
