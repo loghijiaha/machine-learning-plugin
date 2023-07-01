@@ -28,21 +28,12 @@ import hudson.model.FreeStyleProject;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.jvnet.hudson.test.JenkinsRule;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-@RunWith(MockitoJUnitRunner.class)
 public class IPythonBuilderTest {
-
-    @Mock
-    IPythonGlobalConfiguration globalConfiguration;
 
     private IPythonBuilder builder;
     private FreeStyleProject project;
@@ -53,7 +44,6 @@ public class IPythonBuilderTest {
     @Before
     public void setUp() throws IOException {
         // set up mock IPythonGlobalConfiguration
-        globalConfiguration = Mockito.mock(IPythonGlobalConfiguration.class);
         project = jenkins.createFreeStyleProject();
         builder = new IPythonBuilder("","","","","");
     }
@@ -63,7 +53,6 @@ public class IPythonBuilderTest {
         // test for servers method using mock IPythonGlobalConfiguration
         List<Server> serverList = new ArrayList<>();
         serverList.add(new Server("test", "julia", 10, 300));
-        Mockito.when(globalConfiguration.getServers()).thenReturn(serverList);
         project.getBuildersList().add(builder);
         project.save();
         project.scheduleBuild2(0);
