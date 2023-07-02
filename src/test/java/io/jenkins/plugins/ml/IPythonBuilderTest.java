@@ -61,6 +61,7 @@ public class IPythonBuilderTest {
     @Rule
     public JenkinsRule jenkins = new JenkinsRule() {
         private void purgeSlaves() {
+            //purge slaves
             List<Computer> disconnectingComputers = new ArrayList<Computer>();
             List<VirtualChannel> closingChannels = new ArrayList<VirtualChannel>();
             for (Computer computer : jenkins.getComputers()) {
