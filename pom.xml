@@ -267,6 +267,12 @@
             <artifactId>mockito-core</artifactId>
             <version>4.8.1</version>
             <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.objenesis</groupId>
+                    <artifactId>objenesis</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 
