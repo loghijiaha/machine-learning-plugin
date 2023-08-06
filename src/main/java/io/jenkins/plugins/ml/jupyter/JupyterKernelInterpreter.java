@@ -154,7 +154,7 @@ public class JupyterKernelInterpreter extends AbstractInterpreter {
             try (FileInputStream in = new FileInputStream(stdoutFile)) {
                 String freezeOutput = IOUtils.toString(in);
                 for (String packageName : getRequiredPackages()) {
-                    if (!freezeOutput.contains(packageName + "=")) {
+                    if (!freezeOutput.contains(packageName + "=") && !freezeOutput.contains(packageName.replace('-', '_'))) {
                         return packageName + " is not installed.";
                     }
                 }

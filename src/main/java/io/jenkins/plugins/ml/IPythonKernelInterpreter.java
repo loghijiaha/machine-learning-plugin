@@ -62,6 +62,7 @@ public class IPythonKernelInterpreter implements KernelInterpreter  {
 
         // properties for the interpreter
         Properties properties = new Properties();
+        properties.setProperty("zeppelin.python", kernel);
         properties.setProperty("zeppelin.python.maxResult", String.valueOf(maxResult));
         properties.setProperty("zeppelin.python.gatewayserver_address", "127.0.0.1");
         properties.setProperty("zeppelin.jupyter.kernel.launch.timeout", String.valueOf(iPythonLaunchTimeout));
